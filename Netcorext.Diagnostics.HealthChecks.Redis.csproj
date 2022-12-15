@@ -14,10 +14,10 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);IncludeProjectReferences</TargetsForTfmSpecificBuildOutput>
-    <Authors>Aren Chen</Authors>
+    <Authors>NETCOREXT</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/arenchen/Netcorext.Diagnostics.HealthChecks.Redis</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/arenchen/Netcorext.Diagnostics.HealthChecks.Redis.git</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/NETCOREXT/Netcorext.Diagnostics.HealthChecks.Redis</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/NETCOREXT/Netcorext.Diagnostics.HealthChecks.Redis.git</RepositoryUrl>
     <Description>Health checker for Redis</Description>
   </PropertyGroup>
 

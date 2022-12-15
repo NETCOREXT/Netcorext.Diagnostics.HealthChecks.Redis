@@ -25,39 +25,30 @@ internal class RedisClient : IDisposable
 
     public async Task ConnectAsync()
     {
-        try
+        if (!IPAddress.TryParse(_host, out var ip))
+            ip = (await Dns.GetHostAddressesAsync(_host)).FirstOrDefault();
+
+        if (ip == null)
+            throw new ArgumentException($"Unknown Host({_host})");
+
+        _client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
+                  {
+                      SendTimeout = CommandTimeout,
+                      ReceiveTimeout = CommandTimeout
+                  };
+
+        var result = _client.ConnectAsync(ip, _port ?? DEFAULT_PORT);
+
+        var index = Task.WaitAny(new[] { result }, TimeSpan.FromMilliseconds(ConnectTimeout));
+
+        if (index == -1)
         {
-            if (!IPAddress.TryParse(_host, out var ip))
-                ip = (await Dns.GetHostAddressesAsync(_host)).FirstOrDefault();
-
-            if (ip == null)
-                throw new ArgumentException($"Unknown Host({_host})");
-
-            _client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
-                      {
-                          SendTimeout = CommandTimeout,
-                          ReceiveTimeout = CommandTimeout
-                      };
-
-            var result = _client.ConnectAsync(ip, _port ?? DEFAULT_PORT);
-
-            var index = Task.WaitAny(new[] { result }, TimeSpan.FromMilliseconds(ConnectTimeout));
-
-            if (index == -1)
+            if (!_client.Connected)
             {
-                if (!_client.Connected)
-                {
-                    _client.Close();
-                }
-
-                throw new TimeoutException("Connect timeout");
+                _client.Close();
             }
-        }
-        catch (Exception e)
-        {
-            Console.Error.WriteLine(e);
 
-            throw;
+            throw new TimeoutException("Connect timeout");
         }
     }
 
